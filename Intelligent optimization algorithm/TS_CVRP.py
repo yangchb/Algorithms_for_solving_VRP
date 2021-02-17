@@ -188,7 +188,7 @@ def run(filepath,epochs,v_cap,opt_type):
                 new_sol=Sol()
                 new_sol.nodes_seq=doACtion(sol.nodes_seq,action_list[i])
                 new_sol.obj,new_sol.routes=calObj(new_sol.nodes_seq,model)
-                new_sol.action=i
+                new_sol.action_id=i
                 if new_sol.obj<local_new_sol.obj:
                     local_new_sol=copy.deepcopy(new_sol)
         sol=local_new_sol
