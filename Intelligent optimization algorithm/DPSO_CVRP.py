@@ -31,6 +31,7 @@ class Model():
         self.pl=[]
         self.pg=None
         self.v=[]
+        self.Vmax = 5
         self.w=0.8
         self.c1=2
         self.c2=2
@@ -91,7 +92,13 @@ def updatePosition(model):
         pl=model.pl[id]
         r1=random.random()
         r2=random.random()
-        new_v=[w*v[i]+c1*r1*(pl[i]-x[i])+c2*r2*(pg[i]-x[i]) for i in range(model.number_of_nodes)]
+        new_v=[]
+        for i in range(model.number_of_nodes):
+            v_=w*v[i]+c1*r1*(pl[i]-x[i])+c2*r2*(pg[i]-x[i])
+            if v_>0:
+                new_v.append(min(v_,model.Vmax))
+            else:
+                new_v.append(max(v_,-model.Vmax))
         new_x=[min(int(x[i]+new_v[i]),model.number_of_nodes-1) for i in range(model.number_of_nodes) ]
         new_x=adjustRoutes(new_x,model)
         model.v[id]=new_v
@@ -180,12 +187,13 @@ def outPut(model):
         r=[str(i)for i in route]
         worksheet.write(row+2,1, '-'.join(r))
     work.close()
-def run(filepath,epochs,popsize,v_cap,opt_type,w,c1,c2):
+def run(filepath,epochs,popsize,Vmax,v_cap,opt_type,w,c1,c2):
     """
     :param filepath: Xlsx file path
     :param epochs: Iterations
     :param popsize: Population size
     :param v_cap: Vehicle capacity
+    :param Vmax: Max speed
     :param opt_type: Optimization type:0:Minimize the number of vehicles,1:Minimize travel distance
     :param w: Inertia weight
     :param c1:Learning factors
@@ -210,7 +218,7 @@ def run(filepath,epochs,popsize,v_cap,opt_type,w,c1,c2):
     outPut(model)
 if __name__=='__main__':
     file='../data/cvrp.xlsx'
-    run(filepath=file,epochs=150,popsize=150,v_cap=70,opt_type=1,w=0.9,c1=1,c2=5)
+    run(filepath=file,epochs=150,popsize=150,Vmax=1,v_cap=70,opt_type=1,w=0.9,c1=1,c2=5)
 
 
 
