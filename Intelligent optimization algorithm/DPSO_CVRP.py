@@ -74,7 +74,7 @@ def genInitialSol(model,popsize):
         sol.nodes_seq= copy.deepcopy(node_seq)
         sol.obj,sol.routes=calObj(sol.nodes_seq,model)
         model.sol_list.append(sol)
-        model.v.append([0]*model.number_of_nodes)
+        model.v.append([model.Vmax]*model.number_of_nodes)
         model.pl.append(sol.nodes_seq)
         if sol.obj<best_sol.obj:
             best_sol=copy.deepcopy(sol)
@@ -104,16 +104,16 @@ def updatePosition(model):
         model.v[id]=new_v
 
         new_x_obj,new_x_routes=calObj(new_x,model)
-        model.sol_list[id].nodes_seq = copy.deepcopy(new_x)
-        model.sol_list[id].obj = copy.deepcopy(new_x_obj)
-        model.sol_list[id].routes = copy.deepcopy(new_x_routes)
         if new_x_obj<sol.obj:
-            model.pl[id]=copy.deepcopy(new_x_routes)
+            model.pl[id]=copy.deepcopy(new_x)
         if new_x_obj<model.best_sol.obj:
             model.best_sol.obj=copy.deepcopy(new_x_obj)
             model.best_sol.nodes_seq=copy.deepcopy(new_x)
             model.best_sol.routes=copy.deepcopy(new_x_routes)
             model.pg=copy.deepcopy(new_x)
+        model.sol_list[id].nodes_seq = copy.deepcopy(new_x)
+        model.sol_list[id].obj = copy.deepcopy(new_x_obj)
+        model.sol_list[id].routes = copy.deepcopy(new_x_routes)
 
 def adjustRoutes(nodes_seq,model):
     all_node_list=copy.deepcopy(model.node_seq_no_list)
@@ -206,6 +206,7 @@ def run(filepath,epochs,popsize,Vmax,v_cap,opt_type,w,c1,c2):
     model.w=w
     model.c1=c1
     model.c2=c2
+    model.Vmax = Vmax
     readXlsxFile(filepath,model)
     history_best_obj=[]
     genInitialSol(model,popsize)
@@ -218,7 +219,7 @@ def run(filepath,epochs,popsize,Vmax,v_cap,opt_type,w,c1,c2):
     outPut(model)
 if __name__=='__main__':
     file='../data/cvrp.xlsx'
-    run(filepath=file,epochs=150,popsize=150,Vmax=1,v_cap=70,opt_type=1,w=0.9,c1=1,c2=5)
+    run(filepath=file,epochs=100,popsize=150,Vmax=2,v_cap=70,opt_type=1,w=0.9,c1=1,c2=5)
 
 
 
