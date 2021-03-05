@@ -157,7 +157,7 @@ def outPut(model):
         r = [str(i) for i in route]
         worksheet.write(row + 2, 1, '-'.join(r))
     work.close()
-def run(filepath,T0,Tf,deltaT,v_cap,opt_type):
+def run(filepath,T0,Tf,detaT,v_cap,opt_type):
     """
     :param filepath: Xlsx file path
     :param T0: Initial temperature
@@ -185,20 +185,20 @@ def run(filepath,T0,Tf,deltaT,v_cap,opt_type):
             new_sol = Sol()
             new_sol.nodes_seq = doACtion(sol.nodes_seq, action_list[i])
             new_sol.obj, new_sol.routes = calObj(new_sol.nodes_seq, model)
-            detla_f=new_sol.obj-sol.obj
+            deta_f=new_sol.obj-sol.obj
             #New interpretation of acceptance criteria
-            if detla_f<0 or math.exp(-detla_f/Tk)>random.random():
+            if deta_f<0 or math.exp(-deta_f/Tk)>random.random():
                 sol=copy.deepcopy(new_sol)
             if sol.obj<model.best_sol.obj:
                 model.best_sol=copy.deepcopy(sol)
-        if deltaT<1:
-            Tk=Tk*deltaT
+        if detaT<1:
+            Tk=Tk*detaT
         else:
-            Tk = Tk - deltaT
+            Tk = Tk - detaT
         history_best_obj.append(model.best_sol.obj)
         print("temperature：%s，local obj:%s best obj: %s" % (Tk,sol.obj,model.best_sol.obj))
     plotObj(history_best_obj)
     outPut(model)
 if __name__=='__main__':
     file='../data/cvrp.xlsx'
-    run(filepath=file,T0=6000,Tf=0.001,deltaT=0.9,v_cap=80,opt_type=1)
+    run(filepath=file,T0=6000,Tf=0.001,detaT=0.9,v_cap=80,opt_type=1)
